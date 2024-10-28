@@ -33,12 +33,22 @@ if raw_file and completed_file and astro_file:
             self.astro_df = astro_df
 
         def process_chat_intake_requests(self):
-            intake_events = self.raw_df[(self.raw_df['event_name'] == 'chat_intake_submit') & (self.raw_df['paid'] == 0)]
+            # Filter for chat intake events
+            intake_events = self.raw_df[(self.raw_df['event_name'] == 'chat_intake_submit')]
+            
+            # Convert event_time to datetime and adjust timezone
             intake_events['event_time'] = pd.to_datetime(intake_events['event_time'], utc=True) + pd.DateOffset(hours=5, minutes=30)
+            
+            # Create date and hour columns for grouping
             intake_events['date'] = intake_events['event_time'].dt.date
             intake_events['hour'] = intake_events['event_time'].dt.hour
+            
+            # Count unique users for each astrologer by date and hour
             user_counts = intake_events.groupby(['astrologerId', 'date', 'hour'])['user_id'].nunique().reset_index()
+            
+            # Rename columns for clarity
             user_counts.rename(columns={'user_id': 'chat_intake_requests', 'astrologerId': '_id'}, inplace=True)
+            
             return user_counts
 
         def process_chat_accepted_events(self):

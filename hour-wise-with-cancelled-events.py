@@ -132,7 +132,7 @@ if raw_file and completed_file and astro_file:
 
         def merge_with_astro_data(self, final_data):
             merged_data = pd.merge(final_data, self.astro_df, on='_id', how='left')
-            columns = ['_id', 'name', 'type', 'date', 'hour', 'chat_intake_requests', 'chat_accepted', 'chat_completed', 'paid_chats_completed']
+            columns = ['_id', 'name', 'type', 'date', 'hour', 'chat_intake_requests', 'chat_accepted', 'chat_completed','cancelled_requests','avg_time_diff_minutes', 'paid_chats_completed']
             return merged_data[columns]
 
     # Read CSV files
